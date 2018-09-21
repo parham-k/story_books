@@ -20,6 +20,9 @@ class Book(models.Model):
         upload_to=model_filenames.get_book_cover_filename,
         storage=model_filenames.OverwriteStorage(),
     )
+    date_added = models.DateTimeField(
+        auto_now_add=True
+    )
 
     def __str__(self):
         return self.title
@@ -29,6 +32,9 @@ class Book(models.Model):
 
     def get_zip_filename(self):
         return '{}.zip'.format(os.path.join(self.get_dir_path(), self.title))
+
+    class Meta:
+        ordering = ['-date_added']
 
 
 @receiver(models.signals.post_save, sender=Book)
