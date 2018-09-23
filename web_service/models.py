@@ -12,10 +12,6 @@ class Book(models.Model):
     title = models.CharField(
         max_length=255,
     )
-    text = models.FileField(
-        upload_to=model_filenames.get_book_text_filename,
-        storage=model_filenames.OverwriteStorage(),
-    )
     cover = models.ImageField(
         upload_to=model_filenames.get_book_cover_filename,
         storage=model_filenames.OverwriteStorage(),
@@ -47,3 +43,22 @@ def create_zip_file(sender, instance, created, **kwargs):
             if os.path.join(root, file) != instance.get_zip_filename():
                 z.write(os.path.join(root, file), file)
     z.close()
+
+
+class Page(models.Model):
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+    )
+    number = models.IntegerField()
+    image = models.ImageField(
+        upload_to=model_filenames.get_page_image_filename,
+        storage=model_filenames.OverwriteStorage(),
+    )
+    audio = models.FileField(
+        upload_to=model_filenames.get_page_audio_filename,
+        storage=model_filenames.OverwriteStorage(),
+    )
+    text = models.CharField(
+        max_length=8192,
+    )
