@@ -20,8 +20,8 @@ def get_book_cover_filename(instance, filename):
 
 
 def get_page_image_filename(instance, filename):
-    return os.path.join('upload', 'books', instance.title, '{}.png'.format(instance.number))
+    return os.path.join('upload', 'books', str(instance.number), '{}.png'.format(instance.number))
 
 
 def get_page_audio_filename(instance, filename):
-    return os.path.join('upload', 'books', instance.title, '{}.mp3'.format(instance.number))
+    return os.path.join('upload', 'books', str(instance.number), '{}.mp3'.format(instance.number))
