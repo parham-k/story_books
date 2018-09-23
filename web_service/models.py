@@ -29,6 +29,22 @@ class Book(models.Model):
     def get_zip_filename(self):
         return '{}.zip'.format(os.path.join(self.get_dir_path(), self.title))
 
+    def get_dict(self):
+        data = {
+            'title': self.title,
+            'cover': self.cover.url,
+            'date_added': self.date_added.isoformat(),
+        }
+        pages = dict()
+        for page in self.pages.all():
+            pages.update({page.number: {
+                'text': page.text,
+                'image': page.image.url,
+                'audio': page.audio.url,
+            }})
+        data.update({'pages': pages})
+        return data
+
     class Meta:
         ordering = ['-date_added']
 
@@ -49,6 +65,7 @@ class Page(models.Model):
     book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
+        related_name='pages',
     )
     number = models.IntegerField()
     image = models.ImageField(

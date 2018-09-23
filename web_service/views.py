@@ -1,17 +1,14 @@
 import json
 
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponse, Http404
 
 from web_service.models import *
 
 
-def get_book(request, title):
-    if Book.objects.filter(title=title).count() == 1:
-        book = Book.objects.get(title=title)
-        zip_file = open(book.get_zip_filename(), 'rb')
-        response = HttpResponse(zip_file, content_type='application/force-download')
-        response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(book.title)
-        return response
+def get_book(request, id):
+    if Book.objects.filter(pk=id).count() == 1:
+        response_data = Book.objects.get(pk=id).get_dict()
+        return HttpResponse(json.dumps(response_data, ensure_ascii=False), content_type='application/json')
     else:
         raise Http404()
 
