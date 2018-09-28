@@ -1,8 +1,11 @@
 import json
 
+from django.contrib.auth.models import Group, User
 from django.http import HttpResponse, Http404
+from rest_framework import viewsets
 
 from web_service.models import *
+from web_service.serializers import UserSerializer, GroupSerializer
 
 
 def get_book(request, id):
@@ -24,3 +27,13 @@ def get_latest_books(request):
             'date_added': book.date_added.isoformat(),
         }})
     return HttpResponse(json.dumps(response_data, ensure_ascii=False), content_type="application/json")
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
