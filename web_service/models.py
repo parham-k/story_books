@@ -1,8 +1,5 @@
-import os
-
 from django.db import models
 
-from story_books_server.settings import BASE_DIR
 from web_service import model_filenames
 
 
@@ -20,28 +17,6 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_dir_path(self):
-        return os.path.join(BASE_DIR, 'upload', 'books', self.title)
-
-    def get_zip_filename(self):
-        return '{}.zip'.format(os.path.join(self.get_dir_path(), self.title))
-
-    def get_dict(self):
-        data = {
-            'title': self.title,
-            'cover': self.cover.url,
-            'date_added': self.date_added.isoformat(),
-        }
-        pages = dict()
-        for page in self.pages.all():
-            pages.update({page.number: {
-                'text': page.text,
-                'image': page.image.url,
-                'audio': page.audio.url,
-            }})
-        data.update({'pages': pages})
-        return data
 
     class Meta:
         ordering = ['-date_added']
