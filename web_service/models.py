@@ -1,8 +1,6 @@
 import os
-import zipfile
 
 from django.db import models
-from django.dispatch import receiver
 
 from story_books_server.settings import BASE_DIR
 from web_service import model_filenames
@@ -47,18 +45,6 @@ class Book(models.Model):
 
     class Meta:
         ordering = ['-date_added']
-
-
-@receiver(models.signals.post_save, sender=Book)
-def create_zip_file(sender, instance, created, **kwargs):
-    if os.path.exists(instance.get_zip_filename()):
-        os.remove(instance.get_zip_filename())
-    z = zipfile.ZipFile(instance.get_zip_filename(), 'w', zipfile.ZIP_DEFLATED)
-    for root, dirs, files in os.walk(instance.get_dir_path()):
-        for file in files:
-            if os.path.join(root, file) != instance.get_zip_filename():
-                z.write(os.path.join(root, file), file)
-    z.close()
 
 
 class Page(models.Model):
