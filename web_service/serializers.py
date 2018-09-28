@@ -1,22 +1,15 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from web_service.models import *
+from web_service import models
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ('url', 'name')
+        model = models.User
+        fields = ('username', 'full_name', 'phone')
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Book
+        model = models.Book
         fields = ('url', 'pk', 'title', 'date_added')

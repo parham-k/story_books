@@ -95,3 +95,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
+
+AUTH_USER_MODEL = 'web_service.User'

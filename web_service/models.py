@@ -1,6 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 from web_service import model_filenames
+
+
+class User(AbstractUser):
+    full_name = models.CharField(max_length=64)
+    phone = models.CharField(max_length=16)
+
+    def __str__(self):
+        return self.phone
 
 
 class Book(models.Model):
