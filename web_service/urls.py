@@ -6,5 +6,6 @@ from web_service import views
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('get_token/', obtain_auth_token),
-    path('signup/', views.signup, name='signup')
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
 ]
