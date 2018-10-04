@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 
 from web_service import model_filenames
 
@@ -24,6 +25,7 @@ class Book(models.Model):
     date_added = models.DateTimeField(
         auto_now_add=True
     )
+    categories = ArrayField(models.CharField(max_length=16), blank=True, null=True)
 
     def __str__(self):
         return self.title

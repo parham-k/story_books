@@ -50,12 +50,23 @@ def login(request):
 def shop(request):
     page = int(request.GET.get('page', 0))
     offset = int(request.GET.get('offset', 20))
+    search = request.GET.get('filter')
+    categories = request.GET.get('categories')      # todo: fix category querying
     books = dict()
     start_index = page * offset
     end_index = min((page + 1) * offset, models.Book.objects.count())
-    for book in models.Book.objects.all()[start_index: end_index]:
+    books_query = models.Book.objects.all()
+    if search:
+        books_query = books_query.filter(title__contains=search)
+    if categories:
+        books_query = books_query.filter(categories__in=categories)
+    for book in books_query[start_index: end_index]:
         books.update({book.pk: {'name': book.title, 'category': ''}})
-    return Response({
-        'success': True,
-        'books': books
-    })
+    response_data = {'success': True, 'books': books}
+    if page == 0:
+        all_categories = set()
+        for book in models.Book.objects.all():
+            for category in book.categories:
+                all_categories.add(category)
+        response_data.update({'categories': list(all_categories)})
+    return Response(response_data)

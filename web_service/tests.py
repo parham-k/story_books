@@ -19,7 +19,10 @@ class TestServerAPI(APITestCase):
         Token.objects.create(user=self.client).save()
 
         for i in range(100):
-            models.Book(title=f'کتاب شماره {i}').save()
+            models.Book(
+                title=f'کتاب {i}',
+                categories=[f'دسته{i}', f'دسته{i+1}', f'دسته{i+2}']
+            ).save()
 
     def test_signup_and_login(self):
         url = reverse('signup')
@@ -42,8 +45,9 @@ class TestServerAPI(APITestCase):
 
     def test_shop(self):
         url = reverse('shop')
-        data = {"page": "0"}
+        data = {"page": "0", "filter": "کتاب 3"}
         request = self.factory.get(url, data=data)
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
         response = views.shop(request).data
+        print(response)
         assert response['success']
