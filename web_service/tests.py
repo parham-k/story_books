@@ -18,6 +18,9 @@ class TestServerAPI(APITestCase):
         self.client = models.User.objects.create_user(username='client', password='pass1234')
         Token.objects.create(user=self.client).save()
 
+        for i in range(100):
+            models.Book(title=f'کتاب شماره {i}').save()
+
     def test_signup_and_login(self):
         url = reverse('signup')
         data = {

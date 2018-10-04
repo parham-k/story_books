@@ -19,6 +19,7 @@ class Book(models.Model):
     cover = models.ImageField(
         upload_to=model_filenames.get_book_cover_filename,
         storage=model_filenames.OverwriteStorage(),
+        default='default_book_cover.png',
     )
     date_added = models.DateTimeField(
         auto_now_add=True
@@ -41,10 +42,13 @@ class Page(models.Model):
     image = models.ImageField(
         upload_to=model_filenames.get_page_image_filename,
         storage=model_filenames.OverwriteStorage(),
+        default='default_page_image.png',
     )
     audio = models.FileField(
         upload_to=model_filenames.get_page_audio_filename,
         storage=model_filenames.OverwriteStorage(),
+        blank=True,
+        null=True,
     )
     text = models.CharField(
         max_length=8192,

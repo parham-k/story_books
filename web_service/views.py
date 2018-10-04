@@ -54,7 +54,7 @@ def shop(request):
     start_index = page * offset
     end_index = min((page + 1) * offset, models.Book.objects.count())
     for book in models.Book.objects.all()[start_index: end_index]:
-        books.update({book.pk, {'name': book.title, 'category': ''}})
+        books.update({book.pk: {'name': book.title, 'category': ''}})
     return Response({
         'success': True,
         'books': books
