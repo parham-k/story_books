@@ -9,13 +9,14 @@ class TestServerAPI(APITestCase):
 
     def setUp(self):
         self.factory = APIRequestFactory()
-        admin = models.User.objects.create_user(
+        self.admin = models.User.objects.create_user(
             username='admin',
             password='pass1234',
             is_staff=True,
         )
-        self.admin = admin
-        Token.objects.create(user=admin).save()
+        Token.objects.create(user=self.admin).save()
+        self.client = models.User.objects.create_user(username='client', password='pass1234')
+        Token.objects.create(user=self.client).save()
 
     def test_signup_and_login(self):
         url = reverse('signup')

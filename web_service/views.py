@@ -43,3 +43,23 @@ def login(request):
         'token': Token.objects.get(user=user).key,
         'fullname': user.full_name
     })
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def shop(request):
+    token = request.GET.get('token')
+    page = request.GET.get('page')
+    offset = request.GET.get('offset', '20')
+    if Token(user=request.user).key != token:
+        return Response({
+            'success': False,
+            'message': 'ابتدا وارد سیستم شوید.'
+        })
+    books = dict()
+    for book in books[:int(offset)]:
+        books.update({book.pk, {'name': book.title, 'category': ''}})
+    return Response({
+        'success': True,
+        'books': books
+    })
