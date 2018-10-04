@@ -4,3 +4,4 @@ djangorestframework
 markdown
 django-filter
 requests
+psycopg2-binary
