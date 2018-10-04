@@ -45,9 +45,8 @@ class TestServerAPI(APITestCase):
 
     def test_shop(self):
         url = reverse('shop')
-        data = {"page": "0", "filter": "کتاب 3"}
+        data = {"page": "0", "categories": ["دسته3", "دسته5"], "filter": "کتاب 4"}
         request = self.factory.get(url, data=data)
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
         response = views.shop(request).data
-        print(response)
-        assert response['success']
+        assert response['success'] and 5 in response['books']

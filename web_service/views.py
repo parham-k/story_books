@@ -51,7 +51,7 @@ def shop(request):
     page = int(request.GET.get('page', 0))
     offset = int(request.GET.get('offset', 20))
     search = request.GET.get('filter')
-    categories = request.GET.get('categories')      # todo: fix category querying
+    categories = request.GET.getlist('categories')
     books = dict()
     start_index = page * offset
     end_index = min((page + 1) * offset, models.Book.objects.count())
@@ -59,7 +59,7 @@ def shop(request):
     if search:
         books_query = books_query.filter(title__contains=search)
     if categories:
-        books_query = books_query.filter(categories__in=categories)
+        books_query = books_query.filter(categories__overlap=categories)
     for book in books_query[start_index: end_index]:
         books.update({book.pk: {'name': book.title, 'category': ''}})
     response_data = {'success': True, 'books': books}
