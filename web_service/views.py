@@ -48,16 +48,12 @@ def login(request):
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def shop(request):
-    token = request.GET.get('token')
-    page = request.GET.get('page')
-    offset = request.GET.get('offset', '20')
-    if Token(user=request.user).key != token:
-        return Response({
-            'success': False,
-            'message': 'ابتدا وارد سیستم شوید.'
-        })
+    page = int(request.GET.get('page', 0))
+    offset = int(request.GET.get('offset', 20))
     books = dict()
-    for book in books[:int(offset)]:
+    start_index = page * offset
+    end_index = min((page + 1) * offset, models.Book.objects.count())
+    for book in models.Book.objects.all()[start_index: end_index]:
         books.update({book.pk, {'name': book.title, 'category': ''}})
     return Response({
         'success': True,

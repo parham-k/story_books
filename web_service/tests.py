@@ -36,3 +36,11 @@ class TestServerAPI(APITestCase):
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.admin))
         response = views.login(request).data
         assert response['success'] and response['fullname'] == 'test user'
+
+    def test_shop(self):
+        url = reverse('shop')
+        data = {"page": "0"}
+        request = self.factory.get(url, data=data)
+        force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
+        response = views.shop(request).data
+        assert response['success']
