@@ -8,5 +8,7 @@ urlpatterns = [
     path('get_token/', obtain_auth_token),
     path('signup/', views.signup, name='signup'),
     path('login/', views.login, name='login'),
-    path('shop/', views.shop, name='shop')
+    path('shop/', views.shop, name='shop'),
+    path('book_info/', views.book_info, name='book_info'),
+    path('purchase/', views.purchase, name='purchase'),
 ]

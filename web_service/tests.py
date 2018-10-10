@@ -63,3 +63,11 @@ class TestServerAPI(APITestCase):
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
         response = views.shop(request).data
         assert response['success'] and 'کتاب 4' in [book['name'] for book in response['books']]
+
+    def test_purchase(self):
+        url = reverse('purchase')
+        data = {'id': [b.pk for b in models.Book.objects.all()[10:15]]}
+        request = self.factory.post(url, data=data)
+        force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
+        response = views.purchase(request).data
+        assert response['success'] and response['message'].startswith('5')
