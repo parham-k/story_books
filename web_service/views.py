@@ -88,7 +88,7 @@ def book_info(request):
     if pk and models.Book.objects.filter(pk=pk).count() == 1:
         book = models.Book.objects.get(pk=pk)
         pages = []
-        for page in book.pages:
+        for page in book.pages.all():
             pages.append({
                 'number': page.number,
                 'image': page.image.url,
@@ -97,7 +97,7 @@ def book_info(request):
             })
         return Response({
             'success': True,
-            'token': Token.objects.get(user='user'),
+            'token': Token.objects.get(user=request.user),
             'id': book.pk,
             'name': book.title,
             'category': book.categories,

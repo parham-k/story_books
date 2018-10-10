@@ -64,6 +64,14 @@ class TestServerAPI(APITestCase):
         response = views.shop(request).data
         assert response['success'] and 'کتاب 4' in [book['name'] for book in response['books']]
 
+    def test_book_info(self):
+        url = reverse('book_info')
+        data = {'id': models.Book.objects.all()[0].pk}
+        request = self.factory.get(url, data=data)
+        force_authenticate(request, self.admin, token=Token.objects.get(user=self.client))
+        response = views.book_info(request).data
+        assert response['success'] and response['name'] == models.Book.objects.all()[0].title
+
     def test_purchase(self):
         url = reverse('purchase')
         data = {'id': [b.pk for b in models.Book.objects.all()[10:15]]}
