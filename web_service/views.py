@@ -38,10 +38,19 @@ def login(request):
             'success': False,
             'message': 'شماره تلفن و یا رمز عبور اشتباه است.'
         })
+    owned_books = list()
+    for book in user.books.all():
+        owned_books.append({
+            'id': book.pk,
+            'name': book.title,
+            'categories': book.categories,
+            'image': book.cover.url,
+        })
     return Response({
         'success': True,
         'token': Token.objects.get(user=user).key,
-        'fullname': user.full_name
+        'fullname': user.full_name,
+        'books': owned_books
     })
 
 
@@ -52,7 +61,7 @@ def shop(request):
     offset = int(request.GET.get('offset', 20))
     search = request.GET.get('filter')
     categories = request.GET.getlist('categories')
-    books = dict()
+    books = list()
     start_index = page * offset
     end_index = min((page + 1) * offset, models.Book.objects.count())
     books_query = models.Book.objects.all()
@@ -61,7 +70,7 @@ def shop(request):
     if categories:
         books_query = books_query.filter(categories__overlap=categories)
     for book in books_query[start_index: end_index]:
-        books.update({book.pk: {'name': book.title, 'category': ''}})
+        books.append({'id': book.pk, 'name': book.title, 'category': book.categories})
     response_data = {'success': True, 'books': books}
     if page == 0:
         all_categories = set()

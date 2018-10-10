@@ -8,6 +8,7 @@ from web_service import model_filenames
 class User(AbstractUser):
     full_name = models.CharField(max_length=64)
     phone = models.CharField(max_length=16)
+    books = models.ManyToManyField('Book', related_name='owners')
 
     def __str__(self):
         return self.phone
