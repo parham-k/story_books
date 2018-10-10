@@ -28,7 +28,7 @@ def login(request):
     user_query = models.User.objects.filter(phone=request.GET.get('phone'))
     if user_query.count() != 1:
         return Response({
-            'success': 'false',
+            'success': False,
             'message': 'شماره تلفن و یا رمز عبور اشتباه است.'
         })
     user = user_query[0]
@@ -79,3 +79,28 @@ def shop(request):
                 all_categories.add(category)
         response_data.update({'categories': list(all_categories)})
     return Response(response_data)
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def book_info(request):
+    pk = request.GET.get('id')
+    if pk and models.Book.objects.filter(pk=pk).count() == 1:
+        book = models.Book.objects.get(pk=pk)
+        pages = []
+        for page in book.pages:
+            pages.append({
+                'number': page.number,
+                'image': page.image.url,
+                'audio': page.audio.url,
+                'text': page.text,
+            })
+        return Response({
+            'success': True,
+            'token': Token.objects.get(user='user'),
+            'id': book.pk,
+            'name': book.title,
+            'category': book.categories,
+            'image': book.cover.url,
+            'pages': pages,
+        })

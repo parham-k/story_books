@@ -27,6 +27,10 @@ class Book(models.Model):
         auto_now_add=True
     )
     categories = ArrayField(models.CharField(max_length=16), blank=True, null=True)
+    ages = models.CharField(max_length=32)
+    summary = models.TextField(max_length=8192)
+    author = models.CharField(max_length=64)
+    price = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
