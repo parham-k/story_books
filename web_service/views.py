@@ -83,7 +83,7 @@ def shop(request):
             for category in book.categories:
                 all_categories.add(category)
         response_data.update({'categories': list(all_categories)})
-        slides = [{'id': slide.book.pk, 'image': slide.image} for slide in models.Slide.objects.all()]
+        slides = [{'id': slide.book.pk, 'image': slide.image.url} for slide in models.Slide.objects.all()]
         response_data.update({'slides': slides})
     return Response(response_data)
 
