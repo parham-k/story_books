@@ -27,7 +27,7 @@ def signup(request):
     })
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def login(request):
     user_query = models.User.objects.filter(phone=request.GET.get('phone'))
