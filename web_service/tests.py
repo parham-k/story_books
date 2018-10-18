@@ -28,6 +28,9 @@ class TestServerAPI(APITestCase):
             ).save()
         for book in models.Book.objects.all()[:10]:
             self.client.books.add(book)
+            slide = models.Slide(book=book, image='upload/books/1/image')
+            slide.save()
+            book.slides.add(slide)
 
     def test_signup(self):
         url = reverse('signup')

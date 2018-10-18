@@ -60,3 +60,12 @@ class Page(models.Model):
     text = models.CharField(
         max_length=8192,
     )
+
+
+class Slide(models.Model):
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name='slides'
+    )
+    image = models.ImageField()
