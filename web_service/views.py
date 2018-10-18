@@ -129,18 +129,21 @@ def book_info(request):
 @api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def purchase(request):
+    if models.User.objects.filter(phone=request.POST['phone']).count() != 1:
+        return Response({'success': False, 'message': 'کاربر یافت نشد.'})
+    user = models.User.objects.get(phone=request.POST['phone'])
     book_ids = request.POST.getlist('id')
     success_count = 0
     for book_id in book_ids:
         if models.Book.objects.filter(pk=book_id).count() == 1:
             book = models.Book.objects.get(pk=book_id)
-            if book not in request.user.books.all():
-                request.user.books.add(book)
+            if book not in user.books.all():
+                user.books.add(book)
                 success_count += 1
     if success_count > 0:
         return Response({'success': True, 'message': f'{success_count} کتاب به کتاب‌های شما افزوده شدند.'})
     else:
-        return Response({'success': False, 'message': 'کتابی به کتاب‌های شما افزوده نشد'})
+        return Response({'success': False, 'message': 'کتابی به کتاب‌های شما افزوده نشد.'})
 
 
 @api_view(['GET'])

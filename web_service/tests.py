@@ -82,7 +82,7 @@ class TestServerAPI(APITestCase):
 
     def test_purchase(self):
         url = reverse('purchase')
-        data = {'id': [b.pk for b in models.Book.objects.all()[10:15]]}
+        data = {'id': [b.pk for b in models.Book.objects.all()[10:15]], 'phone': self.client.phone}
         request = self.factory.post(url, data=data)
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.admin))
         response = views.purchase(request).data
