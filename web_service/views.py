@@ -108,6 +108,11 @@ def book_info(request):
             'category': book.categories,
             'image': book.cover.url,
             'pages': pages,
+            'ages': book.ages,
+            'story': book.summary,
+            'writer': book.author,
+            'size': book.pages.count(),
+            'price': book.price,
         })
 
 
