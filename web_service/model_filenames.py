@@ -11,17 +11,13 @@ class OverwriteStorage(FileSystemStorage):
         return name
 
 
-def get_book_text_filename(instance, filename):
-    return os.path.join('upload', 'books', instance.title, 'text.txt')
-
-
 def get_book_cover_filename(instance, filename):
-    return os.path.join('upload', 'books', instance.title, 'cover.png')
+    return os.path.join('upload', 'books', str(instance.pk), 'image')
 
 
 def get_page_image_filename(instance, filename):
-    return os.path.join('upload', 'books', str(instance.number), '{}.png'.format(instance.number))
+    return os.path.join('upload', 'books', str(instance.book.pk), str(instance.number), 'image')
 
 
 def get_page_audio_filename(instance, filename):
-    return os.path.join('upload', 'books', str(instance.number), '{}.mp3'.format(instance.number))
+    return os.path.join('upload', 'books', str(instance.book.pk), str(instance.number), 'audio')

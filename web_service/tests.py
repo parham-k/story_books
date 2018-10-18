@@ -15,7 +15,7 @@ class TestServerAPI(APITestCase):
             is_staff=True,
         )
         Token.objects.create(user=self.admin).save()
-        self.client = models.User.objects.create_user(username='client', password='pass1234')
+        self.client = models.User.objects.create_user(username='09133333333', password='pass1234')
         self.client.phone = '09133333333'
         self.client.full_name = 'test client'
         self.client.save()
@@ -43,18 +43,18 @@ class TestServerAPI(APITestCase):
 
         url = reverse('login')
         data = {"phone": "09131112233", "password": "user1234"}
-        request = self.factory.get(url, data=data)
+        request = self.factory.post(url, data=data)
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.admin))
         response = views.login(request).data
-        assert response['success'] and response['fullname'] == 'test user'
+        assert response['success'] and response['full_name'] == 'test user'
 
     def test_login(self):
         url = reverse('login')
         data = {'phone': '09133333333', 'password': 'pass1234'}
-        request = self.factory.get(url, data=data)
+        request = self.factory.post(url, data=data)
         force_authenticate(request, self.admin, token=Token.objects.get(user=self.admin))
         response = views.login(request).data
-        assert response['success'] and response['fullname'] == 'test client' and len(response['books']) == 10
+        assert response['success'] and response['full_name'] == 'test client' and len(response['books']) == 10
 
     def test_shop(self):
         url = reverse('shop')

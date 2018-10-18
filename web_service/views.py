@@ -30,14 +30,14 @@ def signup(request):
 @api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def login(request):
-    user_query = models.User.objects.filter(phone=request.GET.get('phone'))
+    user_query = models.User.objects.filter(phone=request.POST['phone'])
     if user_query.count() != 1:
         return Response({
             'success': False,
             'message': 'شماره تلفن و یا رمز عبور اشتباه است.'
         })
     user = user_query[0]
-    pass_ok = user.check_password((request.GET.get('password')))
+    pass_ok = user.check_password((request.POST['password']))
     if not pass_ok:
         return Response({
             'success': False,
@@ -54,7 +54,7 @@ def login(request):
     return Response({
         'success': True,
         'token': Token.objects.get(user=user).key,
-        'fullname': user.full_name,
+        'full_name': user.full_name,
         'books': owned_books
     })
 
