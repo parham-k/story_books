@@ -88,6 +88,9 @@ class Comment(models.Model):
     date = models.DateTimeField(
         auto_now_add=True,
     )
+    approved = models.BooleanField(
+        default=False,
+    )
 
 
 class AppInfo(models.Model):

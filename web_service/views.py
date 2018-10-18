@@ -102,6 +102,13 @@ def book_info(request):
                 'audio': page.audio.url,
                 'text': page.text,
             })
+        comments = []
+        for comment in book.comments.filter(approved=True):
+            comments.append({
+                'user': comment.user,
+                'text': comment.text,
+                'date': comment.date,
+            })
         return Response({
             'success': True,
             'token': Token.objects.get(user=request.user).key,
@@ -115,11 +122,12 @@ def book_info(request):
             'writer': book.author,
             'size': book.pages.count(),
             'price': book.price,
+            'comments': comments
         })
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([permissions.IsAdminUser])
 def purchase(request):
     book_ids = request.POST.getlist('id')
     success_count = 0
@@ -133,3 +141,33 @@ def purchase(request):
         return Response({'success': True, 'message': f'{success_count} کتاب به کتاب‌های شما افزوده شدند.'})
     else:
         return Response({'success': False, 'message': 'کتابی به کتاب‌های شما افزوده نشد'})
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_app_info(request):
+    return Response(dict((o.key, o.value) for o in models.AppInfo.objects.all()))
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def send_comment(request):
+    user = request.user
+    book_id = int(request.POST['book'])
+    if models.Book.objects.filter(pk=book_id).count() != 1:
+        return Response({
+            'success': False,
+            'message': 'کتاب مورد نظر یافت نشد.'
+        })
+    book = models.Book.objects.get(pk=book_id)
+    text = request.POST['text']
+    comment = models.Comment(
+        user=user,
+        book=book,
+        text=text,
+    )
+    comment.save()
+    return Response({
+        'success': True,
+        'message': 'نظر شما ثبت شد و پس از تأیید، نمایش داده خواهد شد.'
+    })
