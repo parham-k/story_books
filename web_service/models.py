@@ -100,3 +100,17 @@ class AppInfo(models.Model):
     value = models.TextField(
         max_length=1024,
     )
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        related_name='feedback_messages',
+    )
+    text = models.TextField(
+        max_length=4096,
+    )
+    date = models.DateTimeField(
+        auto_now_add=True
+    )

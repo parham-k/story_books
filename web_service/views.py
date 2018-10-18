@@ -174,3 +174,16 @@ def send_comment(request):
         'success': True,
         'message': 'نظر شما ثبت شد و پس از تأیید، نمایش داده خواهد شد.'
     })
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def send_feedback(request):
+    user = request.user
+    text = request.POST['text']
+    feedback = models.Feedback(user=user, text=text)
+    feedback.save()
+    return Response({
+        'success': True,
+        'message': 'پیام شما ثبت شد.'
+    })

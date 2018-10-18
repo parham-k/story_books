@@ -119,3 +119,11 @@ class TestServerAPI(APITestCase):
         response = views.book_info(request).data
         comment_shown = 'good' in [c['text'] for c in response['comments']]
         assert response['success'] and comment_shown
+
+    def test_feedback(self):
+        url = reverse('send_feedback')
+        data = {'text': 'nice'}
+        request = self.factory.post(url, data)
+        force_authenticate(request, self.client, Token.objects.get(user=self.client).key)
+        response = views.send_feedback(request).data
+        assert response['success']
