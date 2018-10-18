@@ -57,7 +57,7 @@ class Page(models.Model):
         blank=True,
         null=True,
     )
-    text = models.CharField(
+    text = models.TextField(
         max_length=8192,
     )
 
@@ -69,3 +69,31 @@ class Slide(models.Model):
         related_name='slides'
     )
     image = models.ImageField()
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    text = models.TextField(
+        max_length=1024,
+    )
+    date = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+
+class AppInfo(models.Model):
+    key = models.CharField(
+        max_length=64
+    )
+    value = models.TextField(
+        max_length=1024,
+    )
