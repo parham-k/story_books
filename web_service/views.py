@@ -126,8 +126,9 @@ def purchase(request):
     for book_id in book_ids:
         if models.Book.objects.filter(pk=book_id).count() == 1:
             book = models.Book.objects.get(pk=book_id)
-            request.user.books.add(book)
-            success_count += 1
+            if book not in request.user.books.all():
+                request.user.books.add(book)
+                success_count += 1
     if success_count > 0:
         return Response({'success': True, 'message': f'{success_count} کتاب به کتاب‌های شما افزوده شدند.'})
     else:
