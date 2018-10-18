@@ -9,6 +9,11 @@ from web_service import models
 @api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def signup(request):
+    if models.User.objects.filter(full_name=request.POST['phone']).count() == 1:
+        return Response({
+            'success': False,
+            'message': 'کاربری با این شماره تلفن قبلاً ثبت‌نام کرده.',
+        })
     user = models.User.objects.create_user(
         username=request.POST['phone'],
         full_name=request.POST['full_name'],
@@ -97,7 +102,7 @@ def book_info(request):
             })
         return Response({
             'success': True,
-            'token': Token.objects.get(user=request.user),
+            'token': Token.objects.get(user=request.user).key,
             'id': book.pk,
             'name': book.title,
             'category': book.categories,
