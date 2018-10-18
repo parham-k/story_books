@@ -9,7 +9,7 @@ from web_service import models
 @api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def signup(request):
-    if models.User.objects.filter(full_name=request.POST['phone']).count() == 1:
+    if models.User.objects.filter(phone=request.POST['phone']).count() == 1:
         return Response({
             'success': False,
             'message': 'کاربری با این شماره تلفن قبلاً ثبت‌نام کرده.',
