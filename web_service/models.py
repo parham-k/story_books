@@ -114,3 +114,18 @@ class Feedback(models.Model):
     date = models.DateTimeField(
         auto_now_add=True
     )
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    factor_number = models.CharField(max_length=64)
+    transaction_id1 = models.IntegerField(blank=True, null=True)
+    transaction_id2 = models.IntegerField(blank=True, null=True)
+    card_number = models.CharField(max_length=32, blank=True, null=True)
+    trace_number = models.IntegerField(blank=True, null=True)
+    payment_amount = models.IntegerField(blank=True, null=True)
+    verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.factor_number

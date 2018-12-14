@@ -1,8 +1,13 @@
+import requests
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
+from story_books_server.settings import PAYMENT_API_KEY
 from web_service import models
 
 
@@ -187,3 +192,69 @@ def send_feedback(request):
         'success': True,
         'message': 'پیام شما ثبت شد.'
     })
+
+
+@api_view(['POST'])
+def payment_request(request):
+    user = request.user
+    book = models.Book.objects.get(pk=int(request.data['book_id']))
+    factor_number = '{}-{}'.format(user.pk, book.pk)
+    data = {
+        'api': PAYMENT_API_KEY,
+        'amount': book.price * 10,
+        'redirect': '',  # todo: callback url
+        'mobile': request.user.phone,
+        'factorNumber': factor_number,
+        'description': 'خرید کتاب {}'.format(book.title),
+    }
+    payment = models.Payment(user=user, book=book, factor_number=factor_number)
+    try:
+        response = requests.post('https://pay.ir/payment/send', data).json()
+        if response['status'] == 1:
+            payment.transaction_id1 = response['transId']
+            payment.factor_number = factor_number
+            payment.save()
+            return Response({
+                'success': True,
+                'message': 'درخواست پرداخت با موفقیت ارسال شد. لطفا در صفحه درگاه، پرداخت را تکمیل کنید.',
+                'transaction_id': response['transId'],
+                'factor_number': factor_number,
+                'redirect_url': 'https://pay.ir/payment/gateway/{}'.format(response['transId']),
+            })
+        else:
+            return Response({'success': False,
+                             'message': 'خطای {}: {}'.format(response['errorCode'], response['errorMessage'])})
+    except requests.exceptions.RequestException as err:
+        return Response({'success': False, 'message': 'خطا در اتصال به درگاه پرداخت.'})
+
+
+@csrf_exempt
+def payment_callback(request):
+    if request.method == 'POST':
+        status = request.POST['status']
+        if status == 0:
+            return render(request, 'payment_done.html', {'error': True, 'message': request.POST['message']})
+        transaction_number = request.POST['transId']
+        factor_number = request.POST['factorNumber']
+        card_number = request.POST['cardNumber']
+        trace_number = request.POST['traceNumber']
+        payment = models.Payment.objects.get(pk=factor_number)
+        payment.transaction_id2 = transaction_number
+        payment.card_number = card_number
+        payment.trace_number = trace_number
+        payment.save()
+        try:
+            verify_data = {'api': PAYMENT_API_KEY, 'transId': int(payment.transaction_id1)}
+            verify_request = requests.post('https://pay.ir/payment/verify', verify_data)
+            response = verify_request.json()
+            if response['status'] == 1:
+                payment.payment_amount = response['amount']
+                payment.payment_verified = True
+                payment.save()
+                return redirect(reverse('dashboard'))
+            else:
+                return render(request, 'payment_done.html', {'error': True, 'message': response['errorMessage']})
+        except requests.exceptions.RequestException as err:
+            return render(request, 'payment_done.html', {'error': True, 'message': str(err)})
+    else:
+        return redirect(reverse('dashboard'))
