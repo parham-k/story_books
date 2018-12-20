@@ -74,7 +74,6 @@ def edit_profile(request):
 
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
 def shop(request):
     page = int(request.GET.get('page', 0))
     offset = int(request.GET.get('offset', 20))
@@ -103,7 +102,6 @@ def shop(request):
 
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
 def book_info(request):
     pk = request.GET.get('id')
     if pk and models.Book.objects.filter(pk=pk).count() == 1:
