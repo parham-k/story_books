@@ -67,8 +67,11 @@ class Slide(models.Model):
     book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
-        related_name='slides'
+        related_name='slides',
+        blank=True,
+        null=True,
     )
+    url = models.URLField(blank=True, null=True)
     image = models.ImageField()
 
 
