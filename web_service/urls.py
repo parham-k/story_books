@@ -14,5 +14,7 @@ urlpatterns = [
     path('app_info/', views.get_app_info, name='app_info'),
     path('send_comment/', views.send_comment, name='send_comment'),
     path('send_feedback/', views.send_feedback, name='send_feedback'),
+    path('payment/request/', views.payment_request, name='payment_request'),
+    path('payment/callback/', views.payment_callback, name='payment_callback'),
     # TODO: path('activate/', views.activate_profile, name='activate_profile'),
 ]

@@ -95,3 +95,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'web_service.User'
+
+PAYMENT_API_KEY = ''
