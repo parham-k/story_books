@@ -1,3 +1,4 @@
+import random
 import requests
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -23,13 +24,28 @@ def signup(request):
         username=request.POST['phone'],
         full_name=request.POST['full_name'],
         phone=request.POST['phone'],
-        password=request.POST['password']
+        password=request.POST['password'],
     )
+    user.sms_token = random.randint(10 ** 4, 10 ** 5)
+    user.is_active = False
+    user.save()
+    # TODO: Send activation SMS
     Token.objects.create(user=user).save()
     return Response({
         'success': True,
         'token': Token.objects.get(user=user).key
     })
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def activate_profile(request):
+    token = request.data['sms_token']
+    if request.user.sms_token == token:
+        request.user.is_active = True
+        request.user.sms_token = None
+        return Response({'success': True, 'message': 'کد فعالسازی تایید شد.'})
+    return Response({'success': False, 'message': 'کد فعالسازی نادرست می‌باشد.'})
 
 
 @api_view(['POST'])
