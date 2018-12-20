@@ -16,5 +16,6 @@ urlpatterns = [
     path('send_feedback/', views.send_feedback, name='send_feedback'),
     path('payment/request/', views.payment_request, name='payment_request'),
     path('payment/callback/', views.payment_callback, name='payment_callback'),
+    path('edit_profile/', views.edit_profile, name='edit_profile')
     # TODO: path('activate/', views.activate_profile, name='activate_profile'),
 ]

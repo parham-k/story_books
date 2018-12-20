@@ -64,6 +64,15 @@ def login(request):
     })
 
 
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def edit_profile(request):
+    request.user.full_name = request.data['name']
+    request.user.phone = request.data['phone']
+    request.user.save()
+    return Response({'success': True, 'message': 'اطلاعات کاربری شما به روز شد.'})
+
+
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def shop(request):
