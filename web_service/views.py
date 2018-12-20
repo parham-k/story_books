@@ -112,8 +112,10 @@ def shop(request):
             for category in book.categories:
                 all_categories.add(category)
         response_data.update({'categories': list(all_categories)})
-        slides = [{'id': slide.book.pk, 'image': slide.image.url, 'url': slide.url} for slide in
-                  models.Slide.objects.all()]
+        slides = [{'is_book': True, 'image': slide.image.url, 'book_id': slide.book.pk} for slide in
+                  models.Slide.objects.all() if slide.book is not None]
+        slides += [{'is_book': False, 'image': slide.image.url, 'url': slide.url} for slide in
+                   models.Slide.objects.all() if slide.book is None]
         response_data.update({'slides': slides})
     return Response(response_data)
 
