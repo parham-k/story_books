@@ -104,7 +104,7 @@ def shop(request):
     if categories:
         books_query = books_query.filter(categories__overlap=categories)
     for book in books_query[start_index: end_index]:
-        books.append({'id': book.pk, 'name': book.title, 'category': book.categories})
+        books.append({'id': book.pk, 'name': book.title, 'category': book.categories, 'image': book.cover.url})
     response_data = {'success': True, 'books': books}
     if page == 0:
         all_categories = set()
