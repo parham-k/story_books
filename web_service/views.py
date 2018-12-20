@@ -142,7 +142,6 @@ def book_info(request):
             })
         return Response({
             'success': True,
-            'token': Token.objects.get(user=request.user).key,
             'id': book.pk,
             'name': book.title,
             'category': book.categories,
