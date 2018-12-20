@@ -72,7 +72,7 @@ class Slide(models.Model):
         null=True,
     )
     url = models.URLField(blank=True, null=True)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='slides')
 
 
 class Comment(models.Model):
