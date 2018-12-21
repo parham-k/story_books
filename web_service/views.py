@@ -215,6 +215,9 @@ def send_feedback(request):
 def payment_request(request):
     user = request.user
     book = models.Book.objects.get(pk=int(request.data['book_id']))
+    if book.price == 0:
+        request.user.books.add(book)
+        return Response({'success': True, 'message': 'کتاب با موفقیت خریداری شد.'})
     factor_number = '{}-{}'.format(user.pk, book.pk)
     data = {
         'api': PAYMENT_API_KEY,
@@ -275,3 +278,24 @@ def payment_callback(request):
             return render(request, 'payment_done.html', {'error': True, 'message': str(err)})
     else:
         return redirect(reverse('dashboard'))
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_book(request):
+    book_id = request.data['book_id']
+    try:
+        book = models.Book.objects.get(pk=int(book_id))
+    except models.Book.DoesNotExist:
+        return Response({'success': False, 'message': 'کتاب مورد نظر یافت نشد.'})
+    if book not in request.user.books:
+        return Response({'success': False, 'message': 'شما این کتاب را خریداری نکرده‌اید.'})
+    pages = []
+    for page in book.pages.all():
+        pages.append({
+            'id': page.pk,
+            'image': page.image.url,
+            'audio': page.audio.url,
+            'text': page.text,
+        })
+    return Response({'success': True, 'book': pages})
