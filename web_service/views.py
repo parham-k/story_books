@@ -94,15 +94,15 @@ def shop(request):
     page = int(request.GET.get('page', 0))
     offset = int(request.GET.get('offset', 20))
     search = request.GET.get('filter')
-    categories = request.GET.getlist('categories')
+    category = request.GET.get('category')
     books = list()
     start_index = page * offset
     end_index = min((page + 1) * offset, models.Book.objects.count())
     books_query = models.Book.objects.all()
     if search:
         books_query = books_query.filter(title__contains=search)
-    if categories:
-        books_query = books_query.filter(categories__overlap=categories)
+    if category:
+        books_query = books_query.filter(categories__contains=[category])
     for book in books_query[start_index: end_index]:
         books.append({'id': book.pk, 'name': book.title, 'category': book.categories, 'image': book.cover.url})
     response_data = {'success': True, 'books': books}
