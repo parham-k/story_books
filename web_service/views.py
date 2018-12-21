@@ -125,14 +125,6 @@ def book_info(request):
     pk = request.GET.get('id')
     if pk and models.Book.objects.filter(pk=pk).count() == 1:
         book = models.Book.objects.get(pk=pk)
-        pages = []
-        for page in book.pages.all():
-            pages.append({
-                'number': page.number,
-                'image': page.image.url,
-                'audio': page.audio.url,
-                'text': page.text,
-            })
         comments = []
         for comment in book.comments.filter(approved=True):
             comments.append({
@@ -146,7 +138,7 @@ def book_info(request):
             'name': book.title,
             'category': book.categories,
             'image': book.cover.url,
-            'pages': pages,
+            'pages': book.pages.count(),
             'ages': book.ages,
             'story': book.summary,
             'writer': book.author,
