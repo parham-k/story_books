@@ -83,8 +83,8 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def edit_profile(request):
-    request.user.full_name = request.data['name']
-    request.user.phone = request.data['phone']
+    request.user.full_name = request.data['full_name']
+    request.user.set_password(request.data['password'])
     request.user.save()
     return Response({'success': True, 'message': 'اطلاعات کاربری شما به روز شد.'})
 
