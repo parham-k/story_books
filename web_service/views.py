@@ -13,7 +13,7 @@ from web_service import models
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAdminUser])
+@permission_classes([permissions.AllowAny])
 def signup(request):
     if models.User.objects.filter(phone=request.POST['phone']).count() == 1:
         return Response({
