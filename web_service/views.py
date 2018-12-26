@@ -33,7 +33,8 @@ def signup(request):
     Token.objects.create(user=user).save()
     return Response({
         'success': True,
-        'token': Token.objects.get(user=user).key
+        'token': Token.objects.get(user=user).key,
+        'message': 'ثبت‌نام با موفقیت انجام شد.',
     })
 
 
@@ -75,7 +76,7 @@ def set_recovered_password(request):
     user.set_password(password)
     user.sms_token = None
     user.save()
-    return Response({'success': False, 'message': 'رمز با موفقیت تغییر یافت.'})
+    return Response({'success': True, 'message': 'رمز با موفقیت تغییر یافت.'})
 
 
 @api_view(['POST'])
@@ -106,7 +107,8 @@ def login(request):
         'success': True,
         'token': Token.objects.get(user=user).key,
         'full_name': user.full_name,
-        'books': owned_books
+        'books': owned_books,
+        'message': '',
     })
 
 
