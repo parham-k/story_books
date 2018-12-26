@@ -18,5 +18,7 @@ urlpatterns = [
     path('payment/callback/', views.payment_callback, name='payment_callback'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('activate/', views.activate_profile, name='activate_profile'),
+    path('password_recovery/', views.password_recovery, name='password_recovery'),
+    path('set_recovered_password/', views.set_recovered_password, name='set_recovered_password'),
     path('get_book/', views.get_book, name='get_book'),
 ]

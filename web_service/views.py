@@ -49,6 +49,36 @@ def activate_profile(request):
 
 
 @api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def password_recovery(request):
+    phone = request.data['phone']
+    try:
+        user = models.User.objects.get(phone=phone)
+    except models.User.DoesNotExist:
+        return Response({'success': False, 'message': 'کاربری بااین شماره پیدا نشد.'})
+    # TODO Send recovery SMS
+    return Response({'success': True, 'message': 'پیامک فراموشی به شماره شما ارسال شد.'})
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def set_recovered_password(request):
+    phone = request.data['phone']
+    code = request.data['code']
+    password = request.data['password']
+    try:
+        user = models.User.objects.get(phone=phone)
+    except models.User.DoesNotExist:
+        return Response({'success': False, 'message': 'کاربری بااین شماره پیدا نشد.'})
+    if code != user.sms_token:
+        return Response({'success': False, 'message': 'کد وارد شده نادرست است.'})
+    user.set_password(password)
+    user.sms_token = None
+    user.save()
+    return Response({'success': False, 'message': 'رمز با موفقیت تغییر یافت.'})
+
+
+@api_view(['POST'])
 @permission_classes([permissions.IsAdminUser])
 def login(request):
     user_query = models.User.objects.filter(phone=request.POST['phone'])
