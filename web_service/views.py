@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from story_books_server.settings import PAYMENT_API_KEY
-from web_service import models
+from web_service import models, sms_api
 
 
 @api_view(['POST'])
@@ -29,7 +29,7 @@ def signup(request):
     user.sms_token = random.randint(10 ** 4, 10 ** 5)
     user.is_active = False
     user.save()
-    # TODO: Send activation SMS
+    sms_api.send_sms(user.phone, 'کد ورود به اپلیکیشن: {}'.format(user.sms_token))
     Token.objects.create(user=user).save()
     return Response({
         'success': True,
@@ -41,7 +41,7 @@ def signup(request):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def activate_profile(request):
-    token = request.data['sms_token']
+    token = request.data['code']
     if request.user.sms_token == token:
         request.user.is_active = True
         request.user.sms_token = None
@@ -57,7 +57,9 @@ def password_recovery(request):
         user = models.User.objects.get(phone=phone)
     except models.User.DoesNotExist:
         return Response({'success': False, 'message': 'کاربری بااین شماره پیدا نشد.'})
-    # TODO Send recovery SMS
+    user.sms_token = random.randint(10 ** 4, 10 ** 5)
+    user.save()
+    sms_api.send_sms(user.phone, 'کد تغییر رمز عبور: {}'.format(user.sms_token))
     return Response({'success': True, 'message': 'پیامک فراموشی به شماره شما ارسال شد.'})
 
 
@@ -95,6 +97,12 @@ def login(request):
             'success': False,
             'message': 'شماره تلفن و یا رمز عبور اشتباه است.'
         })
+    if not user.is_active:
+        user.sms_token = random.randint(10 ** 4, 10 ** 5)
+        user.save()
+        sms_api.send_sms(user.phone, 'کد ورود به اپلیکیشن: {}'.format(user.sms_token))
+        return Response({'success': False,
+                         'message': 'حساب شما فعال نیست. لطفا کد ارسال شده به تلفن خود را وارد کنید.'})
     owned_books = list()
     for book in user.books.all():
         owned_books.append({
