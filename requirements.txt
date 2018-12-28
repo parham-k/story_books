@@ -5,3 +5,4 @@ markdown
 django-filter
 requests
 psycopg2-binary
+django-summernote
