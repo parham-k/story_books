@@ -10,11 +10,10 @@ def send_sms(phone, text):
         "uname": SMS_API_USERNAME,
         "pass": SMS_API_PASSWORD,
         "message": text,
-        "from": "",
+        "from": "100009",
         "to": [phone],
     }
-    response = requests.post(sms_url, data)
-    print(response.content)
+    response = requests.post(sms_url, json=data)
     return response.json()
 
 
