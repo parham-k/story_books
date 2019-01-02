@@ -39,12 +39,17 @@ def signup(request):
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([permissions.AllowAny])
 def activate_profile(request):
+    phone = request.data['phone']
     token = request.data['code']
-    if request.user.sms_token == token:
-        request.user.is_active = True
-        request.user.sms_token = None
+    try:
+        user = models.User.objects.get(phone=phone)
+    except models.User.DoesNotExist:
+        return Response({'success': False, 'message': 'کاربر مورد نظر یافته نشد.'})
+    if user.sms_token == token:
+        user.is_active = True
+        user.sms_token = None
         return Response({'success': True, 'message': 'کد فعالسازی تایید شد.'})
     return Response({'success': False, 'message': 'کد فعالسازی نادرست می‌باشد.'})
 
