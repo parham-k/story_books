@@ -50,7 +50,11 @@ def activate_profile(request):
     if user.sms_token == token:
         user.is_active = True
         user.sms_token = None
-        return Response({'success': True, 'message': 'کد فعالسازی تایید شد.'})
+        user.save()
+        return Response({'success': True,
+                         'message': 'کد فعالسازی تایید شد.',
+                         'token': Token.objects.get(user=user).key
+                         })
     return Response({'success': False, 'message': 'کد فعالسازی نادرست می‌باشد.'})
 
 
