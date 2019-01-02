@@ -17,7 +17,7 @@ from web_service import models, sms_api
 def signup(request):
     if models.User.objects.filter(phone=request.POST['phone']).count() == 1:
         return Response({
-            'success': False,
+            'success': True,
             'message': 'کاربری با این شماره تلفن قبلاً ثبت‌نام کرده.',
         })
     user = models.User.objects.create_user(
