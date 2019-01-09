@@ -1,8 +1,11 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 
 from web_service import model_filenames
+from story_books_server.settings import MEDIA_ROOT
 
 
 class User(AbstractUser):
@@ -35,6 +38,14 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_size(self):
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(os.path.join(MEDIA_ROOT, 'upload', 'books', self.pk)):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+        return total_size
 
     class Meta:
         ordering = ['-date_added']
