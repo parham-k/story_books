@@ -330,7 +330,7 @@ def payment_callback(request):
         return redirect(reverse('dashboard'))
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def get_book(request):
     book_id = request.data['book_id']
