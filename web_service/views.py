@@ -338,7 +338,7 @@ def get_book(request):
         book = models.Book.objects.get(pk=int(book_id))
     except models.Book.DoesNotExist:
         return Response({'success': False, 'message': 'کتاب مورد نظر یافت نشد.'})
-    if book not in request.user.books:
+    if book not in request.user.books.all():
         return Response({'success': False, 'message': 'شما این کتاب را خریداری نکرده‌اید.'})
     pages = []
     for page in book.pages.all():
