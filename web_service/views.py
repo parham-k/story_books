@@ -192,7 +192,7 @@ def book_info(request):
             'ages': book.ages,
             'story': book.summary,
             'writer': book.author,
-            'size': book.get_size(),
+            'size': str(book.get_size() // (10 ** 6))[:3],
             'price': book.price,
             'comments': comments
         })
