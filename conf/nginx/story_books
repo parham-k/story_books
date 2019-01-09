@@ -1,0 +1,14 @@
+server {
+    listen 80;
+    server_name 130.185.76.194;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /media/ {
+        root /home/parham/story_books;
+    }
+
+    location / {
+        include         uwsgi_params;
+        uwsgi_pass      unix:/run/uwsgi/story_books.sock;
+    }
+}
