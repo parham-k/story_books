@@ -41,7 +41,7 @@ class Book(models.Model):
 
     def get_size(self):
         total_size = 0
-        for dirpath, dirnames, filenames in os.walk(os.path.join(MEDIA_ROOT, 'upload', 'books', self.pk)):
+        for dirpath, dirnames, filenames in os.walk(os.path.join(MEDIA_ROOT, 'upload', 'books', str(self.pk))):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
