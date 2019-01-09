@@ -45,7 +45,7 @@ class Book(models.Model):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
-        return total_size
+        return total_size / (10 ** 6)
 
     class Meta:
         ordering = ['-date_added']
