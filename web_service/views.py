@@ -91,7 +91,7 @@ def set_recovered_password(request):
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAdminUser])
+@permission_classes([permissions.AllowAny])
 def login(request):
     user_query = models.User.objects.filter(phone=request.POST['phone'])
     if user_query.count() != 1:
@@ -213,7 +213,7 @@ def purchase(request):
                 user.books.add(book)
                 success_count += 1
     if success_count > 0:
-        return Response({'success': True, 'message': f'{success_count} کتاب به کتاب‌های شما افزوده شدند.'})
+        return Response({'success': True, 'message': '{} کتاب به کتاب‌های شما افزوده شدند.'.format(success_count)})
     else:
         return Response({'success': False, 'message': 'کتابی به کتاب‌های شما افزوده نشد.'})
 
