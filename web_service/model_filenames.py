@@ -12,7 +12,7 @@ class OverwriteStorage(FileSystemStorage):
 
 
 def get_book_cover_filename(instance, filename):
-    return os.path.join('upload', 'books', str(instance.pk), 'image')
+    return os.path.join('upload', 'books', str(instance.title), 'image')
 
 
 def get_page_image_filename(instance, filename):
